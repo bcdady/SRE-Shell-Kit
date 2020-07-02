@@ -1,0 +1,3 @@
+sg-058050f3da5a0a76e	launch-wizard-1	launch-wizard-1 created 2018-08-31T08:24:22.006-07:00	vpc-00dc132818ac7b57e
+sg-05b669cb9922692f4	justinsNodeSG	SSH SG for Justins node	vpc-00dc132818ac7b57e
+sg-0dd8f66a1feaf17a8	launch-wizard-2	launch-wizard-2 created 2020-02-06T00:15:14.848-07:00	vpc-00dc132818ac7b57e

@@ -1,0 +1,82 @@
+[
+  {
+    "Key": "service",
+    "Value": "files"
+  },
+  {
+    "Key": "role",
+    "Value": "jobs"
+  },
+  {
+    "Key": "role",
+    "Value": "jobs"
+  },
+  {
+    "Key": "auth",
+    "Value": null
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-external-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-dev",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-internal-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-dev",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-external-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-prod",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-internal-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-prod",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-external-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-stage",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-internal-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-stage",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-external-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-sandbox",
+    "Value": "owned"
+  },
+  {
+    "Key": "kubernetes.io/service-name",
+    "Value": "kube-system/nginx-ingress-internal-controller"
+  },
+  {
+    "Key": "kubernetes.io/cluster/sap-sandbox",
+    "Value": "owned"
+  }
+]

@@ -1,12 +1,12 @@
 ﻿#!/usr/bin/env pwsh
 #Requires -Version 6
 #========================================
-# NAME      : Set-CETags.pwsh
+# NAME      : Set-CETags.ps1
 # LANGUAGE  : Microsoft PowerShell Core
 # AUTHOR    : Bryan Dady
 # UPDATED   : 2020-02-17
 # COMMENT   : Assign CE-Category and CE-Product tags to all AWS resources that don't yet have those tags populated.
-#             CE is for Cost Explorer, so that AWS costs can be more readily understood.
+#             CE is for Cost Explorer, so that AWS costs can be more readily seen and interpreted in the AWS Cost Explorer web console.
 #========================================
 [CmdletBinding()]
 Param(

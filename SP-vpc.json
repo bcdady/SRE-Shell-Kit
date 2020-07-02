@@ -1,0 +1,58 @@
+{
+    "Vpcs": [
+        {
+            "CidrBlock": "172.31.0.0/16",
+            "DhcpOptionsId": "dopt-ed0bfc88",
+            "State": "available",
+            "VpcId": "vpc-90bd2ff5",
+            "OwnerId": "859122677803",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-a30273ca",
+                    "CidrBlock": "172.31.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": true
+        },
+        {
+            "CidrBlock": "10.0.0.0/16",
+            "DhcpOptionsId": "dopt-ed0bfc88",
+            "State": "available",
+            "VpcId": "vpc-0ae2916f",
+            "OwnerId": "859122677803",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-78e67211",
+                    "CidrBlock": "10.0.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-west-2:859122677803:stack/Snappages/d88f4e40-4cda-11e5-b8f9-50e2414b0a18"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "snappages"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VPC"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "Snappages"
+                }
+            ]
+        }
+    ]
+}

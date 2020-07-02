@@ -1,0 +1,116 @@
+# [Kubernetes Service Migration Prep Checklist](https://subsplash.atlassian.net/wiki/spaces/SRE/pages/268665112/How+to+migrate+a+service+to+Kubernetes#Code-Migration-Checklist)
+
+## Rectify json configuration file template
+
+1. Download the template for the service, put it in config/, and add it to the repo.
+ - Copy from (S3 bucket) 00-config/templates/
+   - $objectPath = 'templates/{environment}/{service}/{servicename}.json.tmpl'
+     - Example: templates/stage/push/push.json.tmpl
+   - $templateList = Get-S3Object -BucketName 00-config | Where-Object -FilterScript {$_.Key -like 'templates/*' }
+   - $template = Get-S3Object -BucketName 00-config -Key $objectPath
+
+SEE https://subsplash.io/go/kubernetes-example-app
+
+## Setup Helm Chart & Values
+
+```go
+gen chart <your-service> -port <port#>  (see port for service from: https://subsplash.atlassian.net/wiki/x/34JBDg)
+```
+
+## Dockerfile & publish-image job
+
+In the .gitlab-ci.yaml file add the following jobs if not already there
+
+```yaml
+publish-image:
+  extends: .publish-image
+  variables:
+    PORT: # Set port for service from https://subsplash.atlassian.net/wiki/x/34JBDg
+
+publish-db-image:
+  extends: .publish-db-image
+gitlab-ci.yaml pipeline & k8s deployment jobs
+
+# Add CHART_VERSION {latest version} here 
+
+variables:
+  CHART_VERSION: 1.5.7 # https://subsplash.io/ops/kubernetes-app-helm-chart
+Add deploy-eks:* stages (note once the deployment works switch the deploy to.deploy-ec2-eks:* ) see How debug eks deployments for more information.
+
+deploy:sandbox:
+  extends: .deploy-ec2-eks:sandbox
+
+deploy:dev:
+  extends: .deploy-ec2-eks:dev
+
+deploy:stage:
+  extends: .deploy-ec2-eks:stage 
+
+deploy:prod:
+  extends: .deploy-ec2-eks:prod
+
+```
+
+## Assume Role Support for dependency on AWS resources (Only add if service requires AWS resources, skip otherwise)
+
+Add the required AWS libraries to app.go or main.go. At minimum you will need:
+
+```go
+import (      
+        "github.com/aws/aws-sdk-go/aws/credentials/stscreds"
+        "github.com/aws/aws-sdk-go/aws/session"
+)
+Add this to the bottom of app.go (or main.go if app.go doesn’t exist):
+
+// setAssumeRoleCreds sets the credentials to allow assuming
+// a role based on the AWS_ROLE_ARN env var being set.
+func setAssumeRoleCreds(s *session.Session, c *aws.Config) {
+	if roleARN := os.Getenv("AWS_ROLE_ARN"); roleARN != "" {
+		c.Credentials = stscreds.NewWebIdentityCredentials(
+			s,
+			roleARN,
+			os.Getenv("POD_NAME"),
+			os.Getenv("AWS_WEB_IDENTITY_TOKEN_FILE"),
+		)
+	}
+}
+```
+
+```go
+Put this before setting up clients for AWS services:
+
+		snsConf := &aws.Config{
+			Region: aws.String("us-west-2"),
+		}
+		if conf.App.Env == service.EnvDocker {
+			snsConf.WithCredentials(credentials.NewStaticCredentials("foo", "bar", ""))
+		}
+		if e := os.Getenv("SNS_ENDPOINT"); e != "" {
+			snsConf.WithEndpoint(e)
+		}
+
+		snsSession, err := session.NewSession(snsConf)
+		if err != nil {
+			log.Fatal("error initializing an aws session: ", err)
+		}
+
+		setAssumeRoleCreds(snsSession, snsConf)
+```
+
+## Container aware cpu limits for go services
+
+Add "go.uber.org/automaxprocs/maxprocs" to the file imports.
+
+Add "strconv" to file imports.
+
+Put this at the beginning of app.New(), or app.Run() if that doesn’t exist
+
+```go
+if isK8S, _ := strconv.ParseBool(os.Getenv("KUBERNETES")); isK8S {
+    _, err := maxprocs.Set(maxprocs.Logger(log.Printf))
+    if err != nil {
+        log.Fatalf("failed to set GOMAXPROCS: %v", err)
+    }
+}
+```
+Update go modules & vendored files as needed.
