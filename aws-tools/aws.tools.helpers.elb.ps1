@@ -237,52 +237,35 @@ function Get-ELB2Rule {
 
 }
 
-#
-# Edit-ELB2Rule example
-# Action(s)
-# - ForwardActionConfig (Array of TargetGroupTuple objects)
-#   - TargetGroupArn
-#   - Weight
-# ForwardConfig : Amazon.ElasticLoadBalancingV2.Model.ForwardActionConfig
-#   TargetGroupArn  : arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-stage-eks-proxy-nginx-tg/fa06f11700204239
-#   TargetGroupName : sap-stage-eks-proxy-nginx-tg
-#   TargetWeight    : 1
+Write-Verbose -Message 'Loading function Get-ELB2RulebyPath'
+function Get-ELB2RulebyPath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory,
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
+            HelpMessage='Specify the URL route / path in the LoadBalancer rule to be matched.'
+        )]
+        [Alias('Path','URL','route','Service')]
+        [ValidateNotNullOrEmpty()]
+        [string]$URLPath
+    )
 
-# Get-ELB2TargetGroup | where {$_.TargetGroupName -like 'sap-*'} | Select-Object -Property TargetGroupName, TargetGroupArn
-<#
-  TargetGroupName                TargetGroupArn
-  ---------------                --------------
-  sap-dev-eks-proxy-nginx-tg     arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-dev-eks-proxy-nginx-tg/993bb2b9e76296a7
-  sap-prod-eks-proxy-nginx-tg    arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-prod-eks-proxy-nginx-tg/dda04a74fde411b9
-  sap-sandbox-eks-proxy-nginx-tg arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-sandbox-eks-proxy-nginx-tg/e4a80c86cbeec856
-  sap-stage-eks-proxy-nginx-tg   arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-stage-eks-proxy-nginx-tg/fa06f11700204239
+    Write-Verbose -Message ('Getting rule target information for route / path matching {0}' -f $URLPath)
 
-$devProxyArn     = 'arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-dev-eks-proxy-nginx-tg/993bb2b9e76296a7'
-$prodProxyArn    = 'arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-prod-eks-proxy-nginx-tg/dda04a74fde411b9'
-$sandboxProxyArn = 'arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-sandbox-eks-proxy-nginx-tg/e4a80c86cbeec856'
-$stageProxyArn   = 'arn:aws:elasticloadbalancing:us-west-2:576546042567:targetgroup/sap-stage-eks-proxy-nginx-tg/fa06f11700204239'
+    Write-Verbose -Message 'Getting rule target information for Subsplash Dev environment Load Balancer'
+    Write-Output -InputObject "`nDev:"
+    Write-Output -InputObject '---------------'
+    Get-ELB2Rule -Name api-dev-subsplash-net -Path $URLPath
 
---actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
-Edit-ELB2Rule -Action 
+    Write-Verbose -Message 'Getting rule target information for Subsplash Dev environment Load Balancer'
+    Write-Output -InputObject "`nStage:"
+    Write-Output -InputObject '---------------'
+    Get-ELB2Rule -Name api-stage-subsplash-net -Path $URLPath
 
-.Actions.ForwardConfig.TargetGroups.TargetGroupArn
-$devProxyTargetGroupTuple = [Amazon.ElasticLoadBalancingV2.Model.TargetGroupTuple]@{
-    'TargetGroupArn' = $devProxyArn
-    'Weight'         = 1
+    Write-Verbose -Message 'Getting rule target information for Subsplash Dev environment Load Balancer'
+    Write-Output -InputObject "`nProd:"
+    Write-Output -InputObject '---------------'
+    Get-ELB2Rule -Name api-subsplash-com -Path $URLPath
+
 }
-
-$newRuleAction = [Amazon.ElasticLoadBalancingV2.Model.Action]@{
-    ForwardConfig = TargetGroups.Add($devProxyTargetGroupTuple)
-}
-
-        # TargetGroups = @{
-        #     'TargetGroupArn' = $devProxyArn
-        #     'Weight'         = 1
-        # }
-
-    
-    Edit-ELB2Rule -RuleArn 'arn:aws:elasticloadbalancing:us-east-1:123456789012:listener-rule/app/testALB/3e2f03b558e19676/1c84f02aec143e80/f4f51dfaa033a8cc' -Condition $newRuleAction -Region us-east-1
-
-    Edit-ELB2Rule -RuleArn RuleArn -Action $newRuleAction
-    
-#>
