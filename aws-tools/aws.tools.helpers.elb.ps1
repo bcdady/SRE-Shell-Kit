@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 #Requires -Version 5
 #========================================
-# NAME      : aws.tools.helpers.ps1
+# NAME      : aws.tools.helpers.elb.ps1
 # LANGUAGE  : Microsoft PowerShell (Core)
 # AUTHOR    : Bryan Dady
 # UPDATED   : 06/01/2020 - First edition
