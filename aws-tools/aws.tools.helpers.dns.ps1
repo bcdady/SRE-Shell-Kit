@@ -67,7 +67,7 @@ Write-Verbose -Message 'Loading function Get-DNSResourceRecord'
 function Get-DNSResourceRecord {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory,
+        [Parameter(
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
             HelpMessage='Name of the Domain for which to get its Values.'
@@ -76,6 +76,7 @@ function Get-DNSResourceRecord {
         [ValidateNotNullOrEmpty()]
         [string]$DomainName,
         [Parameter(Mandatory,
+            Position=0,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
             HelpMessage='Name of the DNS record for which to get its Values.'
@@ -83,9 +84,18 @@ function Get-DNSResourceRecord {
         [Alias('DNSName')]
         [ValidateNotNullOrEmpty()]
         [string]$Name,
+        [ValidateSet('A', 'AAAA', 'CNAME')]
         [string]$Type = 'A',
         [int]$MaxItem = 20
     )
+
+    Write-Verbose -Message ('Getting DNS Name and values, where Name matches *{0}' -f $Name)
+
+    #Presuming the optional DomainName parameter is not specified, derive it from $Name
+    if (-not $DomainName) {
+        $Name -match '\.(.+\..+)$'
+        $DomainName = $Matches[1]
+    }
 
     Write-Verbose -Message ('Getting DNS Name and values, where Name matches *{0}' -f $Name)
 
@@ -138,7 +148,8 @@ Write-Verbose -Message 'Loading function Set-DNSResourceRecord'
 function Set-DNSResourceRecord {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory,
+        [Parameter(
+            Position=0,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
             HelpMessage='Name of the Domain in which to set a record'
@@ -147,6 +158,7 @@ function Set-DNSResourceRecord {
         [ValidateNotNullOrEmpty()]
         [string]$DomainName,
         [Parameter(Mandatory,
+            Position=1,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
             HelpMessage='Name of the DNS Record to set'
@@ -154,13 +166,6 @@ function Set-DNSResourceRecord {
         [Alias('DNSName')]
         [ValidateNotNullOrEmpty()]
         [string]$Name,
-        [Parameter(
-            ValueFromPipeline,
-            ValueFromPipelineByPropertyName,
-            HelpMessage='Value (or target) of the DNS Record to set'
-        )]
-        [ValidateNotNullOrEmpty()]
-        [string]$TargetZoneId,
         [Parameter(Mandatory,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
@@ -169,7 +174,7 @@ function Set-DNSResourceRecord {
         [Alias('Target', 'TargetValue')]
         [ValidateNotNullOrEmpty()]
         [string]$Value,
-        [ValidateSet('A', 'CNAME')]
+        [ValidateSet('A', 'AAAA', 'CNAME')]
         [string]$Type = 'A',
         [ValidateNotNullOrEmpty()]
         [string]$EvaluateTargetHealth = $false,
@@ -179,6 +184,12 @@ function Set-DNSResourceRecord {
 
     # Write-Verbose -Message ('Getting DNS Name and values, where Name matches *{0}' -f $Name)
 
+    #Presuming the optional DomainName parameter is not specified, derive it from $Name
+    if (-not $DomainName) {
+        $Name -match '\.(.+\..+)$'
+        $DomainName = $Matches[1]
+    }
+    
     $HostedZoneInfo = Find-DNSZoneIdByName -Name $DomainName
     Write-Verbose -Message ('$HostedZoneInfo: {0}, {1}' -f $HostedZoneInfo.Name, $HostedZoneInfo.ZoneId)
 
@@ -186,7 +197,7 @@ function Set-DNSResourceRecord {
 
     # concatenate default comment, if it wasn't provided in a parameter
     if (-not $Comment) {
-        $Comment = ('{0}, Set {1} = {2}' -f $Env:USER, $Name, $Value)
+        $Comment = ('{0}, Set {1} (Type: {2}) = {3}' -f $Env:USER, $Name, $Type, $Value)
     }
 
     $change = New-Object Amazon.Route53.Model.Change
