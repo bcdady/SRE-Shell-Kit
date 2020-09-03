@@ -17,3 +17,6 @@ Set-StrictMode -Version latest
 
 Write-Output -Message 'Loading functions from ./aws.tools.helpers.elb.ps1'
 . (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.elb.ps1') -verbose
+
+Write-Output -Message 'Loading functions from ./aws.tools.helpers.dns.ps1'
+. (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.dns.ps1') -verbose

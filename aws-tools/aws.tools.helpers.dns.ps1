@@ -70,7 +70,7 @@ function Get-DNSResourceRecord {
         [Parameter(Mandatory,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
-            HelpMessage='Name of the Domain Name for which to get its Values.'
+            HelpMessage='Name of the Domain for which to get its Values.'
         )]
         [Alias('ZoneName')]
         [ValidateNotNullOrEmpty()]
@@ -78,7 +78,7 @@ function Get-DNSResourceRecord {
         [Parameter(Mandatory,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName,
-            HelpMessage='Name of the DNS Name for which to get its Values.'
+            HelpMessage='Name of the DNS record for which to get its Values.'
         )]
         [Alias('DNSName')]
         [ValidateNotNullOrEmpty()]
@@ -92,7 +92,7 @@ function Get-DNSResourceRecord {
     $HostedZoneInfo = Find-DNSZoneIdByName -Name $DomainName
     Write-Verbose -Message ('$HostedZoneInfo: {0}, {1}' -f $HostedZoneInfo.Name, $HostedZoneInfo.ZoneId)
 
-    Write-Output -InputObject ('Looking up records matching ''{0}'' in domain ''{1}''' -f $Name, $HostedZoneInfo.Name)
+    Write-Output -InputObject ('Looking up records matching ''{0}'' in domain ''{1}'' ({2})' -f $Name, $HostedZoneInfo.Name, $HostedZoneInfo.ZoneId)
 
     $Records = Get-R53ResourceRecordSet -HostedZoneId $HostedZoneInfo.ZoneId -StartRecordType $Type -StartRecordName $Name -MaxItem $MaxItem
 
@@ -100,7 +100,7 @@ function Get-DNSResourceRecord {
     $ResultSet = New-Object System.Collections.ArrayList
 
     #Loop through all matches, processing only those with a matching name
-    $Records.ResourceRecordSets | Where-Object { $PSItem.Name -match "$Name*" } | ForEach-Object -Process {
+    $Records.ResourceRecordSets | Where-Object { $PSItem.Name -match "^$Name*" } | ForEach-Object -Process {
         $RecordName = $PSItem.Name
         $RecordType = $PSItem.Type
         Write-Verbose -Message ('Name: {0}' -f $PSItem.Name)
@@ -109,6 +109,8 @@ function Get-DNSResourceRecord {
         if ($PSItem.AliasTarget) {
             # Is an Alias
             $RecordType = ('{0} (Alias)' -f $RecordType)
+            #$AliasZoneName = 'Unknown'
+            #$AliasZoneName = (Get-R53HostedZone -Id $PSItem.AliasTarget.HostedZoneId -ErrorAction SilentlyContinue).HostedZone.Name
             $Value = ('[ZoneId: {0}] {1}' -f $PSItem.AliasTarget.HostedZoneId, $PSItem.AliasTarget.DNSName)
 
         } else {
@@ -130,4 +132,81 @@ function Get-DNSResourceRecord {
     }
 
     return $ResultSet
+}
+
+Write-Verbose -Message 'Loading function Set-DNSResourceRecord'
+function Set-DNSResourceRecord {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory,
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
+            HelpMessage='Name of the Domain in which to set a record'
+        )]
+        [Alias('ZoneName')]
+        [ValidateNotNullOrEmpty()]
+        [string]$DomainName,
+        [Parameter(Mandatory,
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
+            HelpMessage='Name of the DNS Record to set'
+        )]
+        [Alias('DNSName')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Name,
+        [Parameter(
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
+            HelpMessage='Value (or target) of the DNS Record to set'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [string]$TargetZoneId,
+        [Parameter(Mandatory,
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
+            HelpMessage='Value (or target) of the DNS Record to set'
+        )]
+        [Alias('Target', 'TargetValue')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Value,
+        [ValidateSet('A', 'CNAME')]
+        [string]$Type = 'A',
+        [ValidateNotNullOrEmpty()]
+        [string]$EvaluateTargetHealth = $false,
+        [ValidateNotNullOrEmpty()]
+        [string]$Comment
+    )
+
+    # Write-Verbose -Message ('Getting DNS Name and values, where Name matches *{0}' -f $Name)
+
+    $HostedZoneInfo = Find-DNSZoneIdByName -Name $DomainName
+    Write-Verbose -Message ('$HostedZoneInfo: {0}, {1}' -f $HostedZoneInfo.Name, $HostedZoneInfo.ZoneId)
+
+    Write-Output -InputObject ('Preparing to set records matching ''{0}'' in domain ''{1}'' ({2})' -f $Name, $HostedZoneInfo.Name, $HostedZoneInfo.ZoneId)
+
+    # concatenate default comment, if it wasn't provided in a parameter
+    if (-not $Comment) {
+        $Comment = ('{0}, Set {1} = {2}' -f $Env:USER, $Name, $Value)
+    }
+
+    $change = New-Object Amazon.Route53.Model.Change
+    $change.Action = "UPSERT"
+    # UPSERT: If a resource record set doesn't already exist, Route 53 creates it.
+    # If a resource record set does exist, Route 53 updates it with the values in the request.
+    # https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Route53/TChange.html
+    $change.ResourceRecordSet = New-Object Amazon.Route53.Model.ResourceRecordSet
+    $change.ResourceRecordSet.Name = $Name
+    $change.ResourceRecordSet.Type = $Type
+    $change.ResourceRecordSet.AliasTarget = New-Object Amazon.Route53.Model.AliasTarget
+    $change.ResourceRecordSet.AliasTarget.HostedZoneId = $HostedZoneInfo.ZoneId
+    $change.ResourceRecordSet.AliasTarget.DNSName = $Value
+    $change.ResourceRecordSet.AliasTarget.EvaluateTargetHealth = $EvaluateTargetHealth
+
+    $params = @{
+        HostedZoneId = $HostedZoneInfo.ZoneId
+    	ChangeBatch_Comment = $Comment
+    	ChangeBatch_Change  = $change
+    }
+
+    Edit-R53ResourceRecordSet @params
 }
