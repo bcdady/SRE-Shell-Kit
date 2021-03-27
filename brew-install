@@ -1,0 +1,20 @@
+xcode-select --install
+install homebrew -- https://brew.sh/
+
+brew install awscli git go ktail kubectx kubernetes-cli tmux tmux-xpanes insomnia maccy meld powershell qlimagesize qlmarkdown quicklook-json
+
+brew install --cask appcleaner authy cyberduck discord rectangle lens maccy keybase spotify sunsama superhuman owasp-zap
+
+brew install --cask iterm2 firefox microsoft-edge visual-studio-code
+
+# ansible 
+# aws-iam-authenticator
+# bandwhich bat
+# docker
+
+# helm
+# jq 
+# k9s
+
+# python@3.8 python@3.9
+# redis-cli terraform tfswitch

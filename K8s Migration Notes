@@ -34,7 +34,7 @@ gitlab-ci.yaml pipeline & k8s deployment jobs
 # Add CHART_VERSION {latest version} here 
 
 variables:
-  CHART_VERSION: 1.5.7 # https://subsplash.io/ops/kubernetes-app-helm-chart
+  CHART_VERSION: 1.x # https://subsplash.io/ops/kubernetes-app-helm-chart
 Add deploy-eks:* stages (note once the deployment works switch the deploy to.deploy-ec2-eks:* ) see How debug eks deployments for more information.
 
 deploy:sandbox:

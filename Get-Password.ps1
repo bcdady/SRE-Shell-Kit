@@ -72,7 +72,6 @@ $Secrets = [ordered]@{
     'db-sap-transcoder-stage' = '1179'
     'db-sap-transcoder-prod'  = '182'
     'db-tca-dev-1'	          = '141'
-    'db-tca-dev-2'	          = '178'
     'db-tca-stage-1'	      = '140'
     'db-tca-stage-2'	      = '358'
     'db-tca-prod-1'           = '361'
