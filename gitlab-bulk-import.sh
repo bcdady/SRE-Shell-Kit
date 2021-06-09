@@ -32,7 +32,7 @@ MIRROR=false
 
 # Set GitLab target Group / Namespace ID
 # To list all available namespaces:
-# curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://subsplash.io/api/v4/namespaces"
+# curl --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/namespaces"
 GROUP_ID=197 
 
 # Project Description
@@ -56,7 +56,7 @@ do
     ID=$(curl --request POST \
     --url https://subsplash.io/api/v4/projects \
     --header 'Content-Type: multipart/form-data;' \
-    --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+    --header "Authorization: Bearer $GITLAB_TOKEN" \
     --form path="${REPO}" \
     --form import_url="${SOURCE_URL}${REPO}.git" \
     --form namespace_id=$GROUP_ID \
@@ -79,7 +79,7 @@ do
     # check the ID
     echo "new repo ID is $ID"
     if [[ "$ARCHIVE" = 'true' ]]; then
-        ARCHIVED=$(curl --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/$ID/archive" | jq .archived)
+        ARCHIVED=$(curl --request POST --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/$ID/archive" | jq .archived)
         echo "Project is Archived: $ARCHIVED"
     fi
     echo ""
@@ -90,11 +90,11 @@ exit
 
 # Scratchpad area of other, related, possibly useful gitlab API samples
 
-# ARCHIVED=$(curl --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/553/archive" | jq .archived)
+# ARCHIVED=$(curl --request POST --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/553/archive" | jq .archived)
 # echo "Project is Archived: $ARCHIVED"
 
 # Move a project to a different group / namespace
-# curl --request PUT --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/564/transfer?namespace=197"
+# curl --request PUT --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/564/transfer?namespace=197"
 
 # Get project details by project ID
-# curl --request GET --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/565"
+# curl --request GET --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/projects/565"
