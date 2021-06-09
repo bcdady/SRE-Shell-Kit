@@ -25,13 +25,13 @@ cd $RootFolder
 # Let the person running the script know what's going on.
 'Pulling all repositories...'
 
-# Find all git repositories and update it to the master latest revision
+# Find all git repositories and update it to the main latest revision
 $RepoList = Get-ChildItem -Path ~/repo/*/.git/ -Recurse -Force | Select-Object -ExpandProperty FullName | Split-Path -parent
 
 $RepoList | ForEach-Object -Process {
     cd $PSItem    
     pwd
-    git pull origin master
+    git pull origin main
 } 
 # lets get back to the CUR_DIR
 cd $CUR_DIR
