@@ -1,0 +1,28 @@
+# Configuration file for Mega-Linter
+# See all available variables at https://nvuillam.github.io/mega-linter/configuration/ and in linters documentation
+LOG_LEVEL: WARNING
+PRINT_ALPACA: false # skip the ASCII art
+SHOW_ELAPSED_TIME: true
+
+EXCLUDED_DIRECTORIES:
+  - .DS_Store
+  - .git
+  - .terraform
+  - binlog
+  - "*.tfstate"
+  - "*.tfstate.*"
+  - terraform.tfstate.d
+  - report
+
+ENABLE: # If you use ENABLE variable, all other languages/formats/tooling-formats will be disabled by default
+  - BASH
+
+# ENABLE_LINTERS: # If you use ENABLE_LINTERS variable, all other linters will be disabled by default
+DISABLE:
+  - COPYPASTE
+  # - SPELL
+DISABLE_LINTERS:
+  - BASH_SHFMT # It produces different results from shfmt locally
+
+# BASH_SHELLCHECK_DISABLE_ERRORS: true # treat errors from shellcheck linter as warnings
+SPELL_MISSPELL_FILTER_REGEX_EXCLUDE: ".cspell.json"

@@ -1,0 +1,16 @@
+---
+include:
+  - project: ops/ci
+    ref: main
+    file: /templates.yaml
+
+stages:
+  - test
+
+lint:all:
+  extends: .lint:all
+  stage: test
+  # You can override Mega-Linter flavor used to have faster performances
+  # More info at https://nvuillam.github.io/mega-linter/flavors/
+  image: nvuillam/mega-linter-documentation:v4
+  # To customize mega-linter behavior for this pipeline, edit .mega-linter.yml
