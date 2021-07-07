@@ -40,7 +40,7 @@ for PROJ in $PROJLIST
 do
 
     echo ''
-    echo "Updating settings for ${WEB_URI}/projects/${PROJ}"
+    echo "Updating settings for ${WEB_URI}/projects/${PROJ}/"
     echo ''
 
     # RFE / TODO: get current Description. If blank, parse README for Description text
