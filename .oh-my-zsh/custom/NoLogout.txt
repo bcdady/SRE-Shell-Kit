@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+# invoke the defaults 'app', overwriting the AutoLogOutDelay (to zero = cancel)
+sudo defaults write /Library/Preferences/.GlobalPreferences.plist com.apple.autologout.AutoLogOutDelay -int 0
+
+# read current setting into variable
+AUTOLOGOUTDELAY="$(defaults read /Library/Preferences/.GlobalPreferences.plist com.apple.autologout.AutoLogOutDelay)"
+# Log it
+# https://apple.stackexchange.com/questions/326912/how-do-i-write-to-the-device-console-log-from-the-command-line
+echo "AUTOLOGOUTDELAY is $AUTOLOGOUTDELAY"
+logger -is -p local3.info -t defaults "AUTOLOGOUTDELAY is $AUTOLOGOUTDELAY"
+# osascript -e 'tell application (path to frontmost application as text) to display dialog "AUTOLOGOUTDELAY is $AUTOLOGOUTDELAY" buttons {"OK"} with icon stop'
+
+# logger -is -t krypted "Hello Logs"
+# log show --predicate 'eventMessage contains "Hello Logs"'
+# log show --predicate 'eventMessage contains "AUTOLOGOUTDELAY"'
