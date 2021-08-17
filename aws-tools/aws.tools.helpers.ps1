@@ -4,7 +4,7 @@
 # NAME      : aws.tools.helpers.ps1
 # LANGUAGE  : Microsoft PowerShell (Core)
 # AUTHOR    : Bryan Dady
-# UPDATED   : 06/01/2020 - First edition
+# UPDATED   : 07/24/2021 - v0.0.1 : Enhance ELBv2 helper functions
 # COMMENT   : Provides wrapper functions that make interaction with AWS.Tools. modules and cmdlets more powershell-native
 #========================================
 [CmdletBinding()]
@@ -15,8 +15,8 @@ Set-StrictMode -Version latest
 # '$VerbosePreference = ''Continue'''
 # $VerbosePreference = 'Continue'
 
-Write-Output -Message 'Loading functions from ./aws.tools.helpers.elb.ps1'
-. (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.elb.ps1') -verbose
+Write-Output -InputObject 'Loading functions from ./aws.tools.helpers.elb.ps1'
+. (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.elb.ps1') -Verbose
 
-Write-Output -Message 'Loading functions from ./aws.tools.helpers.dns.ps1'
-. (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.dns.ps1') -verbose
+Write-Output -InputObject 'Loading functions from ./aws.tools.helpers.dns.ps1'
+. (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -ChildPath 'aws.tools.helpers.dns.ps1') -Verbose

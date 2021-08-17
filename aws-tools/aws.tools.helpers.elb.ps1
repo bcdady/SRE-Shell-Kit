@@ -31,7 +31,6 @@ function Find-ELB2LoadBalancerArnByName {
 
     Write-Verbose -Message ('Getting Load Balancer Name and ARN with Name matching *{0}' -f $Name)
     Get-ELB2LoadBalancer | Where-Object -FilterScript {$_.LoadBalancerName -like ('*{0}' -f $Name) } | Select-Object -Property LoadBalancerName, LoadBalancerArn | Sort-Object -Property LoadBalancerName
-    #Get-ELB2LoadBalancer -Name $Name | Sort-Object -ExpandProperty LoadBalancerName
 
 }
 
@@ -39,22 +38,31 @@ Write-Verbose -Message 'Loading function Get-ELB2ListenerByPort'
 function Get-ELB2ListenerByPort {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$True,
+        [Parameter(
             ValueFromPipeline=$True,
             ValueFromPipelineByPropertyName=$True,
             HelpMessage='To get the Name for an ELB2, try Find-ELB2LoadBalancerArnByName.'
         )]
-        [ValidateNotNullOrEmpty()]
         [string]$LoadBalancerArn,
         [Parameter(
             ValueFromPipeline=$True,
             ValueFromPipelineByPropertyName=$True,
             HelpMessage='IPv4 Port Number.'
         )]
-        [ValidateNotNullOrEmpty()]
         [string]$Port = 443
     )
 
+    if ($LoadBalancerArn) {
+      $LoadBalancerName = $(Get-ELB2LoadBalancer -LoadBalancerArn $LoadBalancerArn).LoadBalancerName
+    } else {
+      $ELB2LoadBalancer = Find-ELB2LoadBalancerArnByName | Select-Object -Last 1
+      $LoadBalancerName = $ELB2LoadBalancer.LoadBalancerName
+      $LoadBalancerArn = $ELB2LoadBalancer.LoadBalancerArn
+    }
+
+    Write-Output -InputObject ''
+    Write-Output -InputObject ('LoadBalancerName: {0}' -f $LoadBalancerName)
+    Write-Output -InputObject ('LoadBalancerArn: {0}' -f $LoadBalancerArn)
     Get-ELB2Listener -LoadBalancerArn $LoadBalancerArn | Where-Object -FilterScript {$_.Port -eq $Port}
 
 }
@@ -142,7 +150,7 @@ function Get-ELB2Rule {
 
     $SearchPath = ('*{0}*' -f $URLPath)
 
-    $Rules = Get-ELB2RuleByLbNameAndPort -Name $Name -Port $Port 
+    $Rules = Get-ELB2RuleByLbNameAndPort -Name $Name -Port $Port
     # Rules properties:
     <#
         RuleArn    : arn:aws:elasticloadbalancing:{region}:{account}:listener-rule/{path}
@@ -169,7 +177,7 @@ function Get-ELB2Rule {
             $RuleArn = 'n/a'
         }
         Write-Verbose -Message ('RuleArn: {0}' -f $RuleArn)
-        
+
         try {
             $ConditionsCount = Select-Object -InputObject $PSItem -ExpandProperty Conditions -ErrorAction SilentlyContinue | Measure-Object | Select-Object -ExpandProperty Count
         }
@@ -206,12 +214,12 @@ function Get-ELB2Rule {
                         #'TargetGroupArn'  = $TargetArn # $PSItem.ForwardConfig.TargetGroups.TargetGroupArn
                         #'FilterField'     = $PSItem.Conditions.Field
                         'TargetGroupName' = $TargetGroupName
-                        'Rule Path'       = $FilterPath 
+                        'Rule Path'       = $FilterPath
                         'TargetWeight'    = $TargetWeight
                     }
 
                     $rule = New-Object -TypeName PSObject -Property $properties -ErrorAction SilentlyContinue
-                    
+
                     if (Get-Variable -Name rule -ErrorAction SilentlyContinue) {
                         $null = $Results.Add($rule)
                     } else {
