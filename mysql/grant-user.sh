@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage example:
-# ./db-adduser-rw.sh ./user-foo.prop ./db-sap-dev.conf
+# ./grant-user.sh ./user-foo.prop ./db-sap-dev.conf
 
 # Step 1
 # set new user info
@@ -44,9 +44,6 @@ if [ -n "$3" ]; then
 fi
 
 case "${PRIV:-RO}" in
-"CRUD" )
-  PRIVILEGES="USAGE, SELECT, INSERT, UPDATE, DELETE"
-;;
 "RW" )
   PRIVILEGES="USAGE, SELECT, INSERT, UPDATE, DELETE"
 ;;
