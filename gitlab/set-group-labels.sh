@@ -12,12 +12,11 @@
 API_URI='https://subsplash.io/api/v4'
 WEB_URI='https://subsplash.io'
 
-28ZofqCq$y46NBw6Sf%~pV}8EgWW4X1tuG5e{IgFlGxIiAbs2r
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z $1 ]]; then
-  echo 'No Project specified. Usage: $0 ''GROUP'''
-  exit
+    echo 'No Project specified. Usage: $0 ''GROUP'''
+    exit
 fi
 
 # Project to apply the settings to
@@ -27,8 +26,8 @@ GROUP=$1
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z $GITLAB_TOKEN ]]; then
-  echo 'Error: $GITLAB_TOKEN not set.'
-  exit
+    echo 'Error: $GITLAB_TOKEN not set.'
+    exit
 fi
 
 # Set GitLab target Group / Namespace ID
@@ -43,15 +42,15 @@ echo ''
 echo "Creating Label(s) for ${WEB_URI}/groups/${GROUP}/"
 
 # Setup variables to be used in curl data
-NAME="assign-SRE"                                                                                                        # "assign-backend"
+NAME="assign-SRE" # "assign-backend"
 DESCRIPTION="Automatically assign the merge request to an SRE reviewer. See https://subsplash.io/go/tools/gitlab-helper" # "Automatically assign the merge request to a backend reviewer. See https://subsplash.io/go/tools/gitlab-helper"
-COLOR="deepskyblue"                                                                                                      # "#428BCA"
+COLOR="deepskyblue" # "#428BCA"
 
 # Label settings are specified in data key-value pairs
 LABELID=$(curl --silent --request POST "${API_URI}/groups/${GROUP}/labels" \
   --header "Authorization: Bearer $GITLAB_TOKEN" \
-  --data "name=$NAME&description=$DESCRIPTION&color=$COLOR" |
-  jq -r '.id')
+  --data "name=$NAME&description=$DESCRIPTION&color=$COLOR" \
+  | jq -r '.id')
 
 exit
 
