@@ -25,31 +25,32 @@ if [[ -z $GITHUB_USER ]]; then
 fi
 
 if [[ -z $GITHUB_TOKEN ]]; then
-    echo "Error: \$GITHUB_TOKEN was Not found. If a"
+    echo "Error: \$GITHUB_TOKEN was Not found."
+    echo "If authentication is not required for this source SCM, edit this script and try again."
     exit
 fi
 
 # Set (boolean) whether the project should be marked as Archived in GitLab
-ARCHIVE=true
+ARCHIVE=false
 
 # Set (boolean) whether the project should be pulled/updated on a schedule (mirrored) to GitLab
-MIRROR=false
+MIRROR=true
 
 # Set GitLab target Group / Namespace ID
 # To list all available namespaces:
 # curl --header "Authorization: Bearer $GITLAB_TOKEN" "https://subsplash.io/api/v4/namespaces"
-GROUP_ID=127
+GROUP_ID=233
 
 # Source project URL
 # Note: include https auth in SOURCE_URL if necessary (otherwise, forego "<USERNAME>:<PASSWORD>@")
 # Example: https://<USERNAME>:<PASSWORD>@github.com/path/to/repo.git
-# SOURCE_URL="https://$GITHUB_USER:$GITHUB_TOKEN@github.com/Subsplash/"
-SOURCE_URL="https://github.com/bcdady/"
+SOURCE_URL="https://$GITHUB_USER:$GITHUB_TOKEN@github.com/snappages/"
+# SOURCE_URL="https://github.com/snappages/"
 
 # Project Description
 # The REF_URL should match the SOURCE_URL, without any user or token, so it can be included in
 # the target project description. See `--form description="Cloned from ${REF_URL}${REPO}" \`
-REF_URL="https://github.com/bcdady/"
+REF_URL="https://github.com/snappages/"
 
 # space-delimited list of repositories available from the SOURCE_URL
 REPOLIST="${@}"
@@ -92,16 +93,13 @@ do
     --form request_access_enabled=true \
     --form service_desk_enabled=false \
     --form snippets_access_level=disabled \
-    --form visibility=internal \
     --form wiki_access_level=disabled \
     | jq '. | {id,web_url}')
 
-    export IMPORT=$IMPORT
-
-    echo "IMPORT: $IMPORT"
     # access properties in JSON structure of $IMPORT results
-    ID=$(jq '.id' $IMPORT)
-
+    echo ""
+    echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
+    ID=$(echo $IMPORT | jq '.id')
 
     # pause for a moment, before trying to archive the newly imported project
     if [[ "$ARCHIVE" = 'true' ]]; then
@@ -128,8 +126,11 @@ exit
 # curl --request GET --header "Authorization: Bearer $GITLAB_TOKEN" "$API_URI/projects/565"
 
 # GitHub API notes:
-# https://$GITHUB_USER:$GITHUB_TOKEN@github.com/Subsplash/
+# List repositories for an Org
+curl https://$GITHUB_USER:$GITHUB_TOKEN@api.github.com/orgs/snappages/repos | jq '.[].name'
+
+curl https://$GITHUB_USER:$GITHUB_TOKEN@api.github.com/snappages/
 curl -I https://api.github.com/users/octocat/orgs
 
-$ curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com
+curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com
 

@@ -209,20 +209,20 @@ brew install --cask iterm2 firefox microsoft-edge visual-studio-code
 brew install --cask appcleaner authy cyberduck discord rectangle lens maccy keybase spotify sunsama superhuman owasp-zap
 
 
-# ansible 
+# ansible
 # aws-iam-authenticator
 # bandwhich bat
 # docker
 
 # helm
-# jq 
+# jq
 # k9s
 
 # python@3.8 python@3.9
 # redis-cli terraform tfswitch
 
 
-## Getting Started
+## Getting Started with Oh My ZSH
 
 ### Basic Installation
 
@@ -252,6 +252,11 @@ sh install.sh
 ```
 
 ## Using SRE toolkit
+
+### GitLab API scripts
+
+See [./gitlab/README.md](./gitlab/README.md)
+
 
 __Not comprehensive__
 
