@@ -92,13 +92,13 @@ for REPO in $REPOLIST; do
     --form request_access_enabled=true \
     --form service_desk_enabled=false \
     --form snippets_access_level=disabled \
-    --form wiki_access_level=disabled |
-    jq '. | {id,web_url}')
+    --form wiki_access_level=disabled \
+    | jq '. | {id,web_url}')
 
-  # access properties in JSON structure of $IMPORT results
-  echo ""
-  echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
-  ID=$(echo $IMPORT | jq '.id')
+    # access properties in JSON structure of $IMPORT results
+    echo ""
+    echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
+    ID=$(echo $IMPORT | jq '.id')
 
   # pause for a moment, before trying to archive the newly imported project
   if [[ $ARCHIVE == 'true' ]]; then
