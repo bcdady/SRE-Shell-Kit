@@ -9,7 +9,7 @@ title: "What's this about?"
 This SRE Toolkit is intended to help Site Reliability Engineers (SRE) or Software Development Engineers (SDE/SWE) to quickly and consistently get essential tools setup for use, such as when working on a new Macbook or laptop. This toolkit is intended to provide a pathway from whichever Operating System a person feels most comfortable with, to an operating environment that has consistent set of DevOps / SRE tools for the person to use. It is not intended to prepare a comprehensive development environment for any particular programming language, but it very well may provide a fast-track that reduces the amount of time required to get to that point.
 
 There's no good reason to do manually tasks that computers can do more quickly and consistently. By storing these setup scripts in a git repository, the manual initialization work is reduced to pulling the branch and running the script(s).
-This helps any software engineer prepare to be productive (whether a new team member getting setup, or an established team member (re)loading up a new laptop) in an  automated and repeatable manner.
+This helps any software engineer prepare to be productive (whether a new team member getting setup, or an established team member (re)loading up a new laptop) in an automated and repeatable manner.
 
 ## Tier 0 tool: A POSIX shell
 
@@ -63,9 +63,9 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 #### On Mac (Recommended)
 
-* [Zsh](https://www.zsh.org) should be installed (v4.3.9 or more recent). If not pre-installed (run `zsh --version` to confirm), check the following instructions here: [Installing ZSH](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH)
-* `curl` or `wget` should be installed
-* `git` should be installed
+- [Zsh](https://www.zsh.org) should be installed (v4.3.9 or more recent). If not pre-installed (run `zsh --version` to confirm), check the following instructions here: [Installing ZSH](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH)
+- `curl` or `wget` should be installed
+- `git` should be installed
 
 #### On Linux (Optional)
 
@@ -74,126 +74,127 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 ### Tier 2 tools
 
 Key "formula" / packages that run in a CLI
-__for each, see https://formulae.brew.sh/formula/{formula-name}__
+**for each, see https://formulae.brew.sh/formula/{formula-name}**
 
- - openssl@1.1 Note: All OpenSSL versions before 1.1.1 are out of support and no longer receiving updates.
- - monkeysphere
- - curl (and/or [curlie](https://curlie.io/))
- - lsof
- - macos-trash
-   - and make alias for rm ?
- - howdoi
- - liquidprompt
- - zsh-vi-mode
- - zsh-you-should-use
- - hstr
- - grex
- - cf
- - comby
- - sd
- - autossh
- - whois
- - findomain
- - subfinder
- - dog
- - dnstwist
- - dnstracer
- - ipv6calc
- - silicon
- - wtfutil (/usr/local/Cellar/wtfutil/0.37.0/bin/wtfutil)
- - editorconfig
- - git
- - gitup
- - onefetch
- - gitversion
- - commitizen
- - git-flow
- - git-standup
- - git-sizer
- - gitleaks
- - gh
- - glow
- - glab
- - lab
- - autoenv or direnv or ... ?
- - envchain
- - docker
- - crane
- - hadolint / dockle
- - docker-clean
- - docker-slim
- - grype
- - dependency-check
- - shellcheck
- - shfmt
- - bazel
- - buildifier (https://github.com/bazelbuild/buildtools#readme)
- - bazelisk
- - earthly
- - awscli
- - aws-rotate-key
- - aws-shell
- - aws-console
- - awsume
- - awscurl
- - cli53
- - certigo
- - chamber
- - aws-okta (or gimme-aws-creds ?)
- - aws-google-auth
- - jq
- - jid
- - jc (or jo or jshon ?)
- - gron
- - yq
- - shyaml
- - yamllint
- - jsonlint
- - Task (TaskWarrior, tasksh ?)
- - go-task (Taskfile)
- - go-jira
- - prettier
- - python3
- - pipenv
- - terraform
- - terraformer / terraforming ?
- - iam-policy-json-to-terraform
- - terraform_landscape
- - terraform-docs
- - infracost
- - inframap
- - terrascan
- - tfenv
- - tflint
- - tfsec
- - checkov
- - packer
- - kubernetes-cli (kubectl)
- - kubie (instead of kubectx/kubens)
- - clusterctl
- - click
- - kubergrunt
- - kubeaudit
- - sonobuoy
- - kubespy
- - krew
- - helm
- - helmfile
- - kube-linter
- - chart-testing
- - stern
- - helmsman
- - nuclei
- - devspace
- - mkdocs
- - weaveworks/tap/eksctl
- - teleport
- - testssl
- - tmux
- - tmux-xpanes
+- openssl@1.1 Note: All OpenSSL versions before 1.1.1 are out of support and no longer receiving updates.
+- monkeysphere
+- curl (and/or [curlie](https://curlie.io/))
+- lsof
+- macos-trash
+  - and make alias for rm ?
+- howdoi
+- liquidprompt
+- zsh-vi-mode
+- zsh-you-should-use
+- hstr
+- grex
+- cf
+- comby
+- sd
+- autossh
+- whois
+- findomain
+- subfinder
+- dog
+- dnstwist
+- dnstracer
+- ipv6calc
+- silicon
+- wtfutil (/usr/local/Cellar/wtfutil/0.37.0/bin/wtfutil)
+- editorconfig
+- git
+- gitup
+- onefetch
+- gitversion
+- commitizen
+- git-flow
+- git-standup
+- git-sizer
+- gitleaks
+- gh
+- glow
+- glab
+- lab
+- autoenv or direnv or ... ?
+- envchain
+- docker
+- crane
+- hadolint / dockle
+- docker-clean
+- docker-slim
+- grype
+- dependency-check
+- shellcheck
+- shfmt
+- bazel
+- buildifier (https://github.com/bazelbuild/buildtools#readme)
+- bazelisk
+- earthly
+- awscli
+- aws-rotate-key
+- aws-shell
+- aws-console
+- awsume
+- awscurl
+- cli53
+- certigo
+- chamber
+- aws-okta (or gimme-aws-creds ?)
+- aws-google-auth
+- jq
+- jid
+- jc (or jo or jshon ?)
+- gron
+- yq
+- shyaml
+- yamllint
+- jsonlint
+- Task (TaskWarrior, tasksh ?)
+- go-task (Taskfile)
+- go-jira
+- prettier
+- python3
+- pipenv
+- terraform
+- terraformer / terraforming ?
+- iam-policy-json-to-terraform
+- terraform_landscape
+- terraform-docs
+- infracost
+- inframap
+- terrascan
+- tfenv
+- tflint
+- tfsec
+- checkov
+- packer
+- kubernetes-cli (kubectl)
+- kubie (instead of kubectx/kubens)
+- clusterctl
+- click
+- kubergrunt
+- kubeaudit
+- sonobuoy
+- kubespy
+- krew
+- helm
+- helmfile
+- kube-linter
+- chart-testing
+- stern
+- helmsman
+- nuclei
+- devspace
+- mkdocs
+- weaveworks/tap/eksctl
+- teleport
+- testssl
+- tmux
+- tmux-xpanes
 
 ### Tier 3
- - go (lang)
+
+- go (lang)
 
 ```shell
 brew install awscli git go ktail  kubernetes-cli tmux tmux-xpanes insomnia maccy meld powershell qlimagesize qlmarkdown quicklook-json
@@ -203,24 +204,27 @@ brew install awscli git go ktail  kubernetes-cli tmux tmux-xpanes insomnia maccy
 
 A "cask" is a "Homebrew package definition that installs macOS native applications" -- [Terminology](https://docs.brew.sh/Manpage#terminology)
 
-
 brew install --cask iterm2 firefox microsoft-edge visual-studio-code
 
 brew install --cask appcleaner authy cyberduck discord rectangle lens maccy keybase spotify sunsama superhuman owasp-zap
 
-
 # ansible
+
 # aws-iam-authenticator
+
 # bandwhich bat
+
 # docker
 
 # helm
+
 # jq
-# k9s
+
+# Lens
 
 # python@3.8 python@3.9
-# redis-cli terraform tfswitch
 
+# redis-cli terraform tfswitch
 
 ## Getting Started with Oh My ZSH
 
@@ -257,8 +261,7 @@ sh install.sh
 
 See [./gitlab/README.md](./gitlab/README.md)
 
-
-__Not comprehensive__
+**Not comprehensive**
 
 ## More backstory
 
