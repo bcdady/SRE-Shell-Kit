@@ -1,0 +1,65 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  # https://nvuillam.github.io/mega-linter/flavors/
+  MEGA_LINTER_FLAVOR: documentation
+
+tasks:
+  default:
+    cmds:
+      - task: trunk:format
+    #   - task: tf:sec
+    #   - task: tf:docs
+
+  setup:
+    silent: true
+    desc: test that prerequisites are setup
+    status:
+      - test $(command -v python3)   || (Failed to find Python v3 && exit 1)
+      - test $(command -v trunk)
+      - test $(command -v terraform) || brew install terraform
+      - test $(command -v tflint)    || brew install tflint
+      - test $(command -v tfsec)     || brew install tfsec
+      - test $(command -v terraform-docs) || brew install terraform-docs
+    cmds:
+      # https://docs.trunk.io/getting-started#trunk-launcher
+      - echo "Install Trunk Laucher"
+      - echo "curl https://get.trunk.io -fsSL | bash"
+      - curl https://get.trunk.io -fsSL | bash
+      - echo "Please confirm the required commands and tools are available and try again." && exit 1
+
+  docker:
+    silent: true
+    desc: test that docker is running
+    status:
+      - pgrep -f Docker.app
+    cmds:
+      - open -a 'Docker'
+      - echo "Waiting for Docker to start up ..."
+      - sleep 20
+
+  git_crlf:
+    silent: true
+    desc: set git autcrlf config if necessary
+    status:
+      - test "$(git config --global  -l | grep crlf)" = "core.autocrlf=false"
+    cmds:
+      - git config --global core.autocrlf false
+
+  trunk:config:
+    # silent: true
+    desc: test that a trunk config file exists
+    status:
+      - test -f .trunk/*.yaml
+    cmds:
+      - trunk init
+
+  trunk:format:
+    desc: fix easy lint and style issues
+    deps:
+      - trunk:config
+    cmds:
+      - trunk fmt
+    silent: true

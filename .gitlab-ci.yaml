@@ -1,4 +1,3 @@
----
 include:
   - project: ops/ci
     ref: main
