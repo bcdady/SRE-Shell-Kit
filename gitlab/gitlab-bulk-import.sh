@@ -13,21 +13,21 @@ WEB_URI='https://subsplash.io'
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z $GITLAB_TOKEN ]]; then
-    echo "Error: No \$GITLAB_TOKEN was found."
-    exit
+  echo 'Error: No $GITLAB_TOKEN was found.'
+  exit
 fi
 
 # Check for valid credentials to source system; these variables are used later
 if [[ -z $GITHUB_USER ]]; then
-    echo "Error: \$GITHUB_USER was Not found."
-    echo "If authentication is not required for this source SCM, edit this script and try again."
-    exit
+  echo 'Error: $GITHUB_USER was Not found.'
+  echo "If authentication is not required for this source SCM, edit this script and try again."
+  exit
 fi
 
 if [[ -z $GITHUB_TOKEN ]]; then
-    echo "Error: \$GITHUB_TOKEN was Not found."
-    echo "If authentication is not required for this source SCM, edit this script and try again."
-    exit
+  echo 'Error: $GITHUB_TOKEN was Not found.'
+  echo "If authentication is not required for this source SCM, edit this script and try again."
+  exit
 fi
 
 # Set (boolean) whether the project should be marked as Archived in GitLab
@@ -55,12 +55,11 @@ REF_URL="https://github.com/snappages/"
 # space-delimited list of repositories available from the SOURCE_URL
 REPOLIST="${@}"
 
-for REPO in $REPOLIST
-do
+for REPO in $REPOLIST; do
 
-    echo "Cloning git repository ${REPO} to ${WEB_URI}/projects/${REPO}/"
+  echo "Cloning git repository ${REPO} to ${WEB_URI}/projects/${REPO}/"
 
-    IMPORT=$(curl --request POST \
+  IMPORT=$(curl --request POST \
     --url $API_URI/projects \
     --header 'Content-Type: multipart/form-data;' \
     --header "Authorization: Bearer $GITLAB_TOKEN" \
@@ -93,22 +92,22 @@ do
     --form request_access_enabled=true \
     --form service_desk_enabled=false \
     --form snippets_access_level=disabled \
-    --form wiki_access_level=disabled \
-    | jq '. | {id,web_url}')
+    --form wiki_access_level=disabled |
+    jq '. | {id,web_url}')
 
-    # access properties in JSON structure of $IMPORT results
-    echo ""
-    echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
-    ID=$(echo $IMPORT | jq '.id')
+  # access properties in JSON structure of $IMPORT results
+  echo ""
+  echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
+  ID=$(echo $IMPORT | jq '.id')
 
-    # pause for a moment, before trying to archive the newly imported project
-    if [[ "$ARCHIVE" = 'true' ]]; then
-        echo 'Marking this project as Archived'
-        sleep 1
-        ARCHIVED=$(curl  --request POST --header "Authorization: Bearer $GITLAB_TOKEN" "${API_URI}/projects/${ID}/archive" | jq '. | {archived} | join("")')
-        echo "Project is Archived: $ARCHIVED"
-    fi
-    echo ""
+  # pause for a moment, before trying to archive the newly imported project
+  if [[ $ARCHIVE == 'true' ]]; then
+    echo 'Marking this project as Archived'
+    sleep 1
+    ARCHIVED=$(curl --request POST --header "Authorization: Bearer $GITLAB_TOKEN" "${API_URI}/projects/${ID}/archive" | jq '. | {archived} | join("")')
+    echo "Project is Archived: $ARCHIVED"
+  fi
+  echo ""
 
 done
 
@@ -133,4 +132,3 @@ curl https://$GITHUB_USER:$GITHUB_TOKEN@api.github.com/snappages/
 curl -I https://api.github.com/users/octocat/orgs
 
 curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com
-

@@ -11,7 +11,7 @@
 UNAME="$(uname -s)"
 # echo "UNAME IS $UNAME"
 
-if ! [[ "$UNAME" =~ "Darwin" ]]; then
+if ! [[ ${UNAME} =~ "Darwin" ]]; then
   # Confirm or install dependencies as necessary
   echo "Error: This script is intended for MacOS, but was found to be running on $UNAME"
   exit
@@ -32,6 +32,7 @@ if ! command -v brew >/dev/null; then
 
   # 1.b. Install Homebrew
   echo "Installing homebrew..."
+  # shellcheck disable=SC2312
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # echo "Homebrew successfully installed"
 fi
@@ -39,23 +40,23 @@ fi
 # 2. Check that node.js / npx command is installed
 
 NODE_VERSION=$(node --version)
-if [ "X$NODE_VERSION" = "X" ]; then
+if [[ "X${NODE_VERSION}" = "X" ]]; then
   echo "ERROR: node.js is required, but was not found installed."
   echo "       Installing via 'brew install node'."
   brew install node
 else
-  echo "Confirmed node $NODE_VERSION is available."
+  echo "Confirmed node ${NODE_VERSION} is available."
 fi
 
 # 3. Check that docker is installed
 
 DOCKER_VERSION=$(docker --version)
-if [ "X$DOCKER_VERSION" = "X" ]; then
+if [[ "X${DOCKER_VERSION}" = "X" ]]; then
   echo "ERROR: Docker is required, but was not found installed."
   echo "       Installing via 'brew install --cask docker'."
   brew install --cask docker
 else
-  echo "Confirmed $DOCKER_VERSION is installed."
+  echo "Confirmed ${DOCKER_VERSION} is installed."
 fi
 
 # 4. Run mega-linter with version and help parameters, just to confirm it's working
@@ -65,10 +66,9 @@ npx mega-linter-runner --help
 # 5. Check that go-task / taskfile is installed
 # https://taskfile.dev/#/installation?id=package-managers
 if ! command -v task >/dev/null; then
-  echo "ERROR: Taskfile is recommended, but was not found installed."
+  echo 'ERROR: Taskfile is recommended, but was not found installed.'
   echo "       Installing via 'brew install go-task/tap/go-task'."
   brew install go-task/tap/go-task
 else
-  echo "Confirmed Taskfile is installed."
+  echo 'Confirmed Taskfile is installed.'
 fi
-

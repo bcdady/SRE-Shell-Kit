@@ -7,6 +7,5 @@ bindkey "[C" forward-word
 bindkey "^[a" beginning-of-line
 bindkey "^[e" end-of-line
 
-
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/key-bindings.zsh
-bindkey ' ' magic-space         # [Space] - do history expansion
+bindkey ' ' magic-space # [Space] - do history expansion

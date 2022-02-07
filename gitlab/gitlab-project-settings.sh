@@ -21,8 +21,8 @@ WEB_URI='https://subsplash.io'
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z $GITLAB_TOKEN ]]; then
-    echo "Error: No \$GITLAB_TOKEN was found."
-    exit
+  echo 'Error: No $GITLAB_TOKEN was found.'
+  exit
 fi
 
 # Set GitLab target Group / Namespace ID
@@ -36,22 +36,21 @@ fi
 # https://docs.gitlab.com/ee/api/README.html#namespaced-path-encoding
 PROJLIST=$@
 
-for PROJ in $PROJLIST
-do
+for PROJ in $PROJLIST; do
 
-    echo ''
-    echo "Updating settings for ${WEB_URI}/projects/${PROJ}/"
-    echo ''
+  echo ''
+  echo "Updating settings for ${WEB_URI}/projects/${PROJ}/"
+  echo ''
 
-    # RFE / TODO: get current Description. If blank, parse README for Description text
-    curl --silent --request GET \
+  # RFE / TODO: get current Description. If blank, parse README for Description text
+  curl --silent --request GET \
     --header "Authorization: Bearer $GITLAB_TOKEN" \
-    "${API_URI}/projects/${PROJ}" \
-    | jq '. | {id,name,description,web_url}'
+    "${API_URI}/projects/${PROJ}" |
+    jq '. | {id,name,description,web_url}'
 
-    # Project settings are specified in form entries on their own line
-    # Sorted in alphabetical order
-    curl --silent --request PUT "${API_URI}/projects/${PROJ}" \
+  # Project settings are specified in form entries on their own line
+  # Sorted in alphabetical order
+  curl --silent --request PUT "${API_URI}/projects/${PROJ}" \
     --header 'Content-Type: multipart/form-data;' \
     --header "Authorization: Bearer $GITLAB_TOKEN" \
     --form allow_merge_on_skipped_pipeline=false \
@@ -79,32 +78,32 @@ do
     --form service_desk_enabled=false \
     --form snippets_access_level=disabled \
     --form visibility=internal \
-    --form wiki_access_level=disabled \
-    | jq '. | {id,web_url}'
+    --form wiki_access_level=disabled |
+    jq '. | {id,web_url}'
 
-    echo ''
-    echo 'Protect the "main" branch'
-    # protect the main branch
-    # no users can Push; Developers can merge. Only Admins can change approval settings
-    # Valid access levels
-    # 0  => No access
-    # 30 => Developer access
-    # 40 => Maintainer access
-    # 60 => Admin access
-    curl --silent --request POST \
+  echo ''
+  echo 'Protect the "main" branch'
+  # protect the main branch
+  # no users can Push; Developers can merge. Only Admins can change approval settings
+  # Valid access levels
+  # 0  => No access
+  # 30 => Developer access
+  # 40 => Maintainer access
+  # 60 => Admin access
+  curl --silent --request POST \
     --header "Authorization: Bearer $GITLAB_TOKEN" \
-    "${API_URI}/projects/${PROJ}/protected_branches/?name=main&push_access_level=60&merge_access_level=30&unprotect_access_level=60&code_owner_approval_required=true" \
-    | jq '. | {message}'
+    "${API_URI}/projects/${PROJ}/protected_branches/?name=main&push_access_level=60&merge_access_level=30&unprotect_access_level=60&code_owner_approval_required=true" |
+    jq '. | {message}'
 
-    echo ''
-    echo 'Set MR approval rules'
-    # Set MR approval rules
-    # https://docs.gitlab.com/ee/api/merge_request_approvals.html
-    # approvals_before_merge is set above for the project
-    curl --silent --request POST \
+  echo ''
+  echo 'Set MR approval rules'
+  # Set MR approval rules
+  # https://docs.gitlab.com/ee/api/merge_request_approvals.html
+  # approvals_before_merge is set above for the project
+  curl --silent --request POST \
     --header "Authorization: Bearer $GITLAB_TOKEN" \
-    "${API_URI}/projects/${PROJ}/approvals?merge_requests_author_approval=true&reset_approvals_on_push=true" \
-    | jq '. | {approvals_before_merge}'
+    "${API_URI}/projects/${PROJ}/approvals?merge_requests_author_approval=true&reset_approvals_on_push=true" |
+    jq '. | {approvals_before_merge}'
 
 done
 
