@@ -20,7 +20,7 @@ API_URI='https://subsplash.io/api/v4'
 WEB_URI='https://subsplash.io'
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
-if [[ -z $GITLAB_TOKEN ]]; then
+if [[ -z ${GITLAB_TOKEN} ]]; then
   echo 'Error: No $GITLAB_TOKEN was found.'
   exit
 fi
@@ -36,7 +36,7 @@ fi
 # https://docs.gitlab.com/ee/api/README.html#namespaced-path-encoding
 PROJLIST=$@
 
-for PROJ in $PROJLIST; do
+for PROJ in ${PROJLIST}; do
 
   echo ''
   echo "Updating settings for ${WEB_URI}/projects/${PROJ}/"

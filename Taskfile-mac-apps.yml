@@ -1,0 +1,66 @@
+# https://taskfile.dev
+version: "3"
+
+tasks:
+  default:
+    deps:
+      - iTerm
+      - discord
+      - slack
+      - edge
+      - sunsama
+      - tunnelblick
+
+  iTerm:
+    desc: Launch iTerm browser
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/iTerm.app/ || echo "Failed to locate iTerm"
+    cmds:
+      - echo "Opening iTerm."
+      - open -a /Applications/iTerm.app/
+
+  edge:
+    desc: Launch Edge browser
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/Microsoft\ Edge.app/ || echo "Failed to locate Microsoft Edge"
+    cmds:
+      - echo "Opening Edge."
+      - open -a /Applications/Microsoft\ Edge.app/
+
+  discord:
+    desc: Launch Discord
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/Discord.app || echo "Failed to locate Discord.app"
+    cmds:
+      - echo "Opening Discord."
+      - open -a /Applications/Discord.app
+
+  slack:
+    desc: Launch Slack
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/Slack.app || echo "Failed to locate Slack.app"
+    cmds:
+      - echo "Opening slack."
+      - open -a /Applications/Slack.app
+
+  sunsama:
+    desc: Launch Sunsama
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/Sunsama.app || echo "Failed to locate Sunsama.app"
+    cmds:
+      - echo "Opening Sunsama."
+      - open -a /Applications/Sunsama.app
+
+  tunnelblick:
+    desc: Launch Tunnelblick VPN client
+    status:
+      - test "$(uname -s)" = "Darwin"
+      - test -f /Applications/Tunnelblick.app || echo "Failed to locate Tunnelblick.app"
+    cmds:
+      - echo "Opening Tunnelblick."
+      - open -a /Applications/Tunnelblick.app

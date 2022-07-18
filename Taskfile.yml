@@ -9,23 +9,26 @@ tasks:
     deps: [setup]
     cmds:
       - task: trunk:format
+    #   - task: tf:sec
+      - task: tf:docs
 
   setup:
     silent: true
     desc: test that prerequisites are setup
     status:
+      - test $(command -v asdf) || brew install asdf
       # - test "$(uname -s)" = "Darwin" # && echo "Darwin ok"
+      - test $(command -v python3)   || (Failed to find Python v3 && exit 1)
       - test $(command -v trunk)
       # - test $(command -v terraform) || brew install terraform
       # - test $(command -v checkov) || brew install checkov
-      # - test $(command -v terraform-docs) || brew install terraform-docs
-      # - test $(command -v jsonnet) || brew install go-jsonnet # includes jsonnetfmt
-      # - test $(command -v jb) || brew install jsonnet-bundler
+      # - test $(command -v tfsec) || brew install tfsec
 
     cmds:
       # https://docs.trunk.io/getting-started#trunk-launcher
       # TODO Add trunk support in asdf-vm
       - echo "Installing Trunk Launcher ..."
+      - echo "Install Trunk Launcher"
       - echo "curl https://get.trunk.io -fsSL | bash"
       - curl https://get.trunk.io -fsSL | bash
       - echo "Please confirm the required commands and tools are available and try again." && exit 1
