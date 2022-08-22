@@ -1,37 +1,38 @@
+---
 # https://taskfile.dev
-
 version: "3"
 
-vars:
-  # https://nvuillam.github.io/mega-linter/flavors/
-  MEGA_LINTER_FLAVOR: documentation
+# vars:
 
 tasks:
   default:
+    deps: [setup]
     cmds:
       - task: trunk:format
-    #   - task: tf:sec
-    #   - task: tf:docs
 
   setup:
     silent: true
     desc: test that prerequisites are setup
     status:
-      - test $(command -v python3)   || (Failed to find Python v3 && exit 1)
+      # - test "$(uname -s)" = "Darwin" # && echo "Darwin ok"
       - test $(command -v trunk)
-      - test $(command -v terraform) || brew install terraform
-      - test $(command -v tflint)    || brew install tflint
-      - test $(command -v tfsec)     || brew install tfsec
-      - test $(command -v terraform-docs) || brew install terraform-docs
+      # - test $(command -v terraform) || brew install terraform
+      # - test $(command -v checkov) || brew install checkov
+      # - test $(command -v terraform-docs) || brew install terraform-docs
+      # - test $(command -v jsonnet) || brew install go-jsonnet # includes jsonnetfmt
+      # - test $(command -v jb) || brew install jsonnet-bundler
+
     cmds:
       # https://docs.trunk.io/getting-started#trunk-launcher
-      - echo "Install Trunk Laucher"
+      # TODO Add trunk support in asdf-vm
+      - echo "Installing Trunk Launcher ..."
       - echo "curl https://get.trunk.io -fsSL | bash"
       - curl https://get.trunk.io -fsSL | bash
       - echo "Please confirm the required commands and tools are available and try again." && exit 1
 
   docker:
     silent: true
+    deps: [setup]
     desc: test that docker is running
     status:
       - pgrep -f Docker.app
@@ -40,26 +41,20 @@ tasks:
       - echo "Waiting for Docker to start up ..."
       - sleep 20
 
-  git_crlf:
-    silent: true
-    desc: set git autcrlf config if necessary
-    status:
-      - test "$(git config --global  -l | grep crlf)" = "core.autocrlf=false"
-    cmds:
-      - git config --global core.autocrlf false
-
-  trunk:config:
+  trunk:init:
     # silent: true
     desc: test that a trunk config file exists
     status:
-      - test -f .trunk/*.yaml
+      - test -f .trunk/trunk.yaml
     cmds:
       - trunk init
+    generates:
+      - ./.trunk/trunk.yaml
 
   trunk:format:
+    silent: true
     desc: fix easy lint and style issues
     deps:
-      - trunk:config
+      - trunk:init
     cmds:
-      - trunk fmt
-    silent: true
+      - trunk fmt -a
