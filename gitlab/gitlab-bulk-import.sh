@@ -12,19 +12,19 @@ API_URI='https://subsplash.io/api/v4'
 WEB_URI='https://subsplash.io'
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
-if [[ -z $GITLAB_TOKEN ]]; then
+if [[ -z ${GITLAB_TOKEN} ]]; then
   echo 'Error: No $GITLAB_TOKEN was found.'
   exit
 fi
 
 # Check for valid credentials to source system; these variables are used later
-if [[ -z $GITHUB_USER ]]; then
+if [[ -z ${GITHUB_USER} ]]; then
   echo 'Error: $GITHUB_USER was Not found.'
   echo "If authentication is not required for this source SCM, edit this script and try again."
   exit
 fi
 
-if [[ -z $GITHUB_TOKEN ]]; then
+if [[ -z ${GITHUB_TOKEN} ]]; then
   echo 'Error: $GITHUB_TOKEN was Not found.'
   echo "If authentication is not required for this source SCM, edit this script and try again."
   exit
@@ -44,7 +44,7 @@ GROUP_ID=233
 # Source project URL
 # Note: include https auth in SOURCE_URL if necessary (otherwise, forego "<USERNAME>:<PASSWORD>@")
 # Example: https://<USERNAME>:<PASSWORD>@github.com/path/to/repo.git
-SOURCE_URL="https://$GITHUB_USER:$GITHUB_TOKEN@github.com/snappages/"
+SOURCE_URL="https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/snappages/"
 # SOURCE_URL="https://github.com/snappages/"
 
 # Project Description
@@ -55,18 +55,18 @@ REF_URL="https://github.com/snappages/"
 # space-delimited list of repositories available from the SOURCE_URL
 REPOLIST="${@}"
 
-for REPO in $REPOLIST; do
+for REPO in ${REPOLIST}; do
 
   echo "Cloning git repository ${REPO} to ${WEB_URI}/projects/${REPO}/"
 
   IMPORT=$(curl --request POST \
     --url $API_URI/projects \
     --header 'Content-Type: multipart/form-data;' \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     --form description="Cloned from ${REF_URL}${REPO}" \
     --form import_url="${SOURCE_URL}${REPO}.git" \
-    --form mirror=$MIRROR \
-    --form namespace_id=$GROUP_ID \
+    --form mirror=${MIRROR} \
+    --form namespace_id=${GROUP_ID} \
     --form path="${REPO}" \
     --form allow_merge_on_skipped_pipeline=false \
     --form analytics_access_level=disabled \
@@ -92,20 +92,20 @@ for REPO in $REPOLIST; do
     --form request_access_enabled=true \
     --form service_desk_enabled=false \
     --form snippets_access_level=disabled \
-    --form wiki_access_level=disabled \
-    | jq '. | {id,web_url}')
+    --form wiki_access_level=disabled |
+    jq '. | {id,web_url}')
 
-    # access properties in JSON structure of $IMPORT results
-    echo ""
-    echo "Cloned project to $(echo $IMPORT | jq '.web_url')"
-    ID=$(echo $IMPORT | jq '.id')
+  # access properties in JSON structure of $IMPORT results
+  echo ""
+  echo "Cloned project to $(echo ${IMPORT} | jq '.web_url')"
+  ID=$(echo "${IMPORT}" | jq '.id')
 
   # pause for a moment, before trying to archive the newly imported project
-  if [[ $ARCHIVE == 'true' ]]; then
+  if [[ ${ARCHIVE} == 'true' ]]; then
     echo 'Marking this project as Archived'
     sleep 1
-    ARCHIVED=$(curl --request POST --header "Authorization: Bearer $GITLAB_TOKEN" "${API_URI}/projects/${ID}/archive" | jq '. | {archived} | join("")')
-    echo "Project is Archived: $ARCHIVED"
+    ARCHIVED=$(curl --request POST --header "Authorization: Bearer ${GITLAB_TOKEN}" "${API_URI}/projects/${ID}/archive" | jq '. | {archived} | join("")')
+    echo "Project is Archived: ${ARCHIVED}"
   fi
   echo ""
 

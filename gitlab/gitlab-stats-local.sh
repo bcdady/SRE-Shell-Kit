@@ -18,7 +18,7 @@ while IFS= read -r line; do
   #REPO="git@subsplash.io:release/google-play.git"
   #re="\w+$"
   #if [[ $line =~ $re ]]; then LOCAL=${BASH_REMATCH[1]}; fi
-  LOCAL=`basename $line`
+  LOCAL=$(basename $line)
 
   printf "INFO: Running cloc on repo $LOCAL ...\n"
   # create an output filename to be written by the following invocation of cloc
@@ -27,17 +27,17 @@ while IFS= read -r line; do
   # printf "cloc --exclude-dir=vendor --yaml --file-encoding='UTF-8' --out=$OUTFILE $line\n"
   cloc --exclude-dir=vendor --csv --file-encoding="UTF-8" --out=$OUTFILE $line # $LOCAL  # Output options include --csv --md --file-encoding="UTF-8" --yaml --out=FILE
   # insert source path into the resulting yaml file :: awk '{print} sub(/elapsed_seconds/,"source_path        : {PATH}\n  elapsed_seconds")' ./test.yaml
-  # insert source path into the resulting csv file 
+  # insert source path into the resulting csv file
   # printf "Updating output file to include source directory \n"
-  awk '{print} sub(/code\,\"github.com\/AlDanial\/cloc/,"code, source = '$LOCAL', cloc")' $OUTFILE > stats.tmp
+  awk '{print} sub(/code\,\"github.com\/AlDanial\/cloc/,"code, source = '$LOCAL', cloc")' $OUTFILE >stats.tmp
   # replace the original header line
-  sed '1d' stats.tmp > $OUTFILE
-  cat $OUTFILE >> summary_stats.csv
- 
+  sed '1d' stats.tmp >$OUTFILE
+  cat $OUTFILE >>summary_stats.csv
+
   # then clenanup /delete the earlier tmp file
   rm -f stats.tmp
 
-done < "$input"
+done <"$input"
 
 echo "Done!"
 

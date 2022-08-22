@@ -40,7 +40,7 @@ fi
 # 2. Check that node.js / npx command is installed
 
 NODE_VERSION=$(node --version)
-if [[ "X${NODE_VERSION}" = "X" ]]; then
+if [[ "X${NODE_VERSION}" == "X" ]]; then
   echo "ERROR: node.js is required, but was not found installed."
   echo "       Installing via 'brew install node'."
   brew install node
@@ -51,7 +51,7 @@ fi
 # 3. Check that docker is installed
 
 DOCKER_VERSION=$(docker --version)
-if [[ "X${DOCKER_VERSION}" = "X" ]]; then
+if [[ "X${DOCKER_VERSION}" == "X" ]]; then
   echo "ERROR: Docker is required, but was not found installed."
   echo "       Installing via 'brew install --cask docker'."
   brew install --cask docker

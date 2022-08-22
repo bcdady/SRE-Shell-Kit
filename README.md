@@ -25,7 +25,7 @@ The tools selected for this toolkit are not necessarily superior to all others, 
 
 ### Myriad options and alternatives
 
-There are many tools that different software engineers have created to meet their needs over the years. As a colleague recently joked with me: "When a software developer encounters a new problem, their instinct is to develop software to solve that problem". In my experience, it is rare for a software engineer to go looking for a solution to a particular problem, and for them to find am existing option that meets their needs or expectations. From that perspective, the tools included or even recommended here are not presented as objectively the correct options. If you feel strongly that the value or efficacy of this toolkit could be improved, you are invited and encouraged to contribute such a nomination. See (Help improve this SRE toolkit)[##HelpimprovethisSREtoolkit]
+There are many tools that different software engineers have created to meet their needs over the years. As a colleague recently joked with me: "When a software developer encounters a new problem, their instinct is to develop software to solve that problem". In my experience, it is rare for a software engineer to go looking for a solution to a particular problem, and for them to find am existing option that meets their needs or expectations. From that perspective, the tools included or even recommended here are not presented as objectively the correct options. If you feel strongly that the value or efficacy of this toolkit could be improved, you are invited and encouraged to contribute such a nomination. See [Help improve this SRE toolkit](##HelpimprovethisSREtoolkit)
 
 ### Tier 1: Homebrew
 
@@ -208,23 +208,19 @@ brew install --cask iterm2 firefox microsoft-edge visual-studio-code
 
 brew install --cask appcleaner authy cyberduck discord rectangle lens maccy keybase spotify sunsama superhuman owasp-zap
 
-# ansible
-
-# aws-iam-authenticator
-
-# bandwhich bat
-
-# docker
-
-# helm
-
-# jq
-
-# Lens
-
-# python@3.8 python@3.9
-
-# redis-cli terraform tfswitch
+  * ansible
+  * asdf
+  * aws-iam-authenticator
+  * bandwhich
+  * bat
+  * docker
+  * helm
+  * jq
+  * Lens
+  * python@3.9
+  * redis-cli
+  * terraform
+  * tfswitch / tfenv
 
 ## Getting Started with Oh My ZSH
 
@@ -261,9 +257,9 @@ sh install.sh
 
 See [./gitlab/README.md](./gitlab/README.md)
 
-**Not comprehensive**
+## Not comprehensive
 
-## More backstory
+### More backstory
 
 The bedrock (as in, under the foundation) component of any software engineer toolkit is a ready-to-run [command line shell](https://en.wikipedia.org/wiki/Comparison_of_command_shells) (or terminal, or console, or whatever you prefer to label it). The essential means of a human getting a computer to perform designated work, (especially across a cloud-scale technology stack) is through specifying instructions at a command-line with a keyboard (not a mouse :) ). Customizing and optimizing the command-line operating environment to reduce toil is a fundamental function of enabling this human - computer interface to be efficient.
 

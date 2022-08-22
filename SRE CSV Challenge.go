@@ -47,23 +47,23 @@ func main() {
 
 		// RegEx option could look something like this:
 		//   matched, err := regexp.MatchString(`a.b`, "aaxbb")
-	
+
 		// Length is 3, and the unique resource name is the 3rd element
 		u, _ := urlElements[2]
 		// create a key that includes the resource name and month (or date)
 		// Example map entry -- sermon-2-2019-07-14 = n bytes
 		k, _ := u + "-" + d
 		// OR
-		//  k, _ := request[1] + "-" + d		
+		//  k, _ := request[1] + "-" + d
 
 		if v, found := m[k]; found {
-			m[k] = v+request[3]
+			m[k] = v + request[3]
 		} else {
 			m[k] = request[3]
 		}
 	}
 
-	scala> grades.valuesIterator.max
+	scala > grades.valuesIterator.max
 	maxValue, err := m.valuesIterator.max
 	for key, value := range m {
 		fmt.Println("Key:", key, "Value:", value)
