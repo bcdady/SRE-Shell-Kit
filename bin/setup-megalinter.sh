@@ -13,7 +13,7 @@ UNAME="$(uname -s)"
 
 if ! [[ ${UNAME} =~ "Darwin" ]]; then
   # Confirm or install dependencies as necessary
-  echo "Error: This script is intended for MacOS, but was found to be running on $UNAME"
+  echo "Error: This script is intended for MacOS, but was found to be running on ${UNAME}"
   exit
 fi
 

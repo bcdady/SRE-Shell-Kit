@@ -21,6 +21,7 @@ WEB_URI='https://subsplash.io'
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z ${GITLAB_TOKEN} ]]; then
+  # shellcheck disable=SC2016
   echo 'Error: No $GITLAB_TOKEN was found.'
   exit
 fi
@@ -34,9 +35,9 @@ fi
 # space-delimited list of projects to apply the settings to
 # Can be a numerical Project ID or a URL-encoded URI
 # https://docs.gitlab.com/ee/api/README.html#namespaced-path-encoding
-PROJLIST=$@
+PROJLIST=( "${@}" )
 
-for PROJ in ${PROJLIST}; do
+for PROJ in "${PROJLIST[@]}"; do
 
   echo ''
   echo "Updating settings for ${WEB_URI}/projects/${PROJ}/"
@@ -44,7 +45,7 @@ for PROJ in ${PROJLIST}; do
 
   # RFE / TODO: get current Description. If blank, parse README for Description text
   curl --silent --request GET \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     "${API_URI}/projects/${PROJ}" |
     jq '. | {id,name,description,web_url}'
 
@@ -52,7 +53,7 @@ for PROJ in ${PROJLIST}; do
   # Sorted in alphabetical order
   curl --silent --request PUT "${API_URI}/projects/${PROJ}" \
     --header 'Content-Type: multipart/form-data;' \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     --form allow_merge_on_skipped_pipeline=false \
     --form analytics_access_level=disabled \
     --form approvals_before_merge=1 \
@@ -91,7 +92,7 @@ for PROJ in ${PROJLIST}; do
   # 40 => Maintainer access
   # 60 => Admin access
   curl --silent --request POST \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     "${API_URI}/projects/${PROJ}/protected_branches/?name=main&push_access_level=60&merge_access_level=30&unprotect_access_level=60&code_owner_approval_required=true" |
     jq '. | {message}'
 
@@ -101,7 +102,7 @@ for PROJ in ${PROJLIST}; do
   # https://docs.gitlab.com/ee/api/merge_request_approvals.html
   # approvals_before_merge is set above for the project
   curl --silent --request POST \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     "${API_URI}/projects/${PROJ}/approvals?merge_requests_author_approval=true&reset_approvals_on_push=true" |
     jq '. | {approvals_before_merge}'
 

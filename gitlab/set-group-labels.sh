@@ -24,7 +24,7 @@ fi
 GROUP=$1
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
-if [[ -z $GITLAB_TOKEN ]]; then
+if [[ -z ${GITLAB_TOKEN} ]]; then
   echo 'Error: $GITLAB_TOKEN not set.'
   exit
 fi
@@ -47,8 +47,8 @@ COLOR="deepskyblue"                                                             
 
 # Label settings are specified in data key-value pairs
 LABELID=$(curl --silent --request POST "${API_URI}/groups/${GROUP}/labels" \
-  --header "Authorization: Bearer $GITLAB_TOKEN" \
-  --data "name=$NAME&description=$DESCRIPTION&color=$COLOR" |
+  --header "Authorization: Bearer ${GITLAB_TOKEN}" \
+  --data "name=${NAME}&description=${DESCRIPTION}&color=${COLOR}" |
   jq -r '.id')
 
 exit

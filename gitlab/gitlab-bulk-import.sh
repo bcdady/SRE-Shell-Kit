@@ -11,20 +11,27 @@
 API_URI='https://subsplash.io/api/v4'
 WEB_URI='https://subsplash.io'
 
+# Organization or Username for the source repository
+# Used in the SOURCE_URL and REF_URL
+SOURCE_ORG='snappages'
+
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
 if [[ -z ${GITLAB_TOKEN} ]]; then
+  # shellcheck disable=SC2016
   echo 'Error: No $GITLAB_TOKEN was found.'
   exit
 fi
 
 # Check for valid credentials to source system; these variables are used later
 if [[ -z ${GITHUB_USER} ]]; then
+  # shellcheck disable=SC2016
   echo 'Error: $GITHUB_USER was Not found.'
   echo "If authentication is not required for this source SCM, edit this script and try again."
   exit
 fi
 
 if [[ -z ${GITHUB_TOKEN} ]]; then
+  # shellcheck disable=SC2016
   echo 'Error: $GITHUB_TOKEN was Not found.'
   echo "If authentication is not required for this source SCM, edit this script and try again."
   exit
@@ -44,29 +51,29 @@ GROUP_ID=233
 # Source project URL
 # Note: include https auth in SOURCE_URL if necessary (otherwise, forego "<USERNAME>:<PASSWORD>@")
 # Example: https://<USERNAME>:<PASSWORD>@github.com/path/to/repo.git
-SOURCE_URL="https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/snappages/"
-# SOURCE_URL="https://github.com/snappages/"
+SOURCE_URL="https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${SOURCE_ORG}/"
+# SOURCE_URL="https://github.com/${SOURCE_ORG}/"
 
 # Project Description
 # The REF_URL should match the SOURCE_URL, without any user or token, so it can be included in
 # the target project description. See `--form description="Cloned from ${REF_URL}${REPO}" \`
-REF_URL="https://github.com/snappages/"
+REF_URL="https://github.com/${SOURCE_ORG}/"
 
 # space-delimited list of repositories available from the SOURCE_URL
-REPOLIST="${@}"
+REPOLIST=( "${@}" )
 
-for REPO in ${REPOLIST}; do
+for REPO in "${REPOLIST[@]}"; do
 
   echo "Cloning git repository ${REPO} to ${WEB_URI}/projects/${REPO}/"
 
   IMPORT=$(curl --request POST \
-    --url $API_URI/projects \
+    --url "${API_URI}"/projects \
     --header 'Content-Type: multipart/form-data;' \
     --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     --form description="Cloned from ${REF_URL}${REPO}" \
     --form import_url="${SOURCE_URL}${REPO}.git" \
-    --form mirror=${MIRROR} \
-    --form namespace_id=${GROUP_ID} \
+    --form mirror="${MIRROR}" \
+    --form namespace_id="${GROUP_ID}" \
     --form path="${REPO}" \
     --form allow_merge_on_skipped_pipeline=false \
     --form analytics_access_level=disabled \
@@ -97,7 +104,7 @@ for REPO in ${REPOLIST}; do
 
   # access properties in JSON structure of $IMPORT results
   echo ""
-  echo "Cloned project to $(echo ${IMPORT} | jq '.web_url')"
+  echo "Cloned project to $(echo "${IMPORT}" | jq '.web_url')"
   ID=$(echo "${IMPORT}" | jq '.id')
 
   # pause for a moment, before trying to archive the newly imported project
@@ -126,9 +133,9 @@ exit
 
 # GitHub API notes:
 # List repositories for an Org
-curl https://$GITHUB_USER:$GITHUB_TOKEN@api.github.com/orgs/snappages/repos | jq '.[].name'
+# curl https://"${GITHUB_USER}":"${GITHUB_TOKEN}"@api.github.com/orgs/${SOURCE_ORG}/repos | jq '.[].name'
 
-curl https://$GITHUB_USER:$GITHUB_TOKEN@api.github.com/snappages/
-curl -I https://api.github.com/users/octocat/orgs
+# curl https://"${GITHUB_USER}":"${GITHUB_TOKEN}"@api.github.com/${SOURCE_ORG}/
+# curl -I https://api.github.com/users/octocat/orgs
 
-curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com
+# curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com

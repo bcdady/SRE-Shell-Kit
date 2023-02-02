@@ -5,11 +5,11 @@
 CUR_DIR=$(pwd)
 
 if [[ $# -eq 1 ]]; then
-    REPOBASE="$1"
-    echo "repo: '${REPOBASE}' set by parameter"
+  REPOBASE="$1"
+  echo "repo: '${REPOBASE}' set by parameter"
 else
-    REPOBASE="${HOME}/repo"
-    echo 'No repo specified by parameter. Using ~/repo'
+  REPOBASE="${HOME}/repo"
+  echo 'No repo specified by parameter. Using ~/repo'
 fi
 
 # Go to repository root
@@ -20,29 +20,30 @@ echo "$(pwd) Pulling all repositories..." || true
 
 # Find all git repositories and update it to the main latest revision
 for i in $(find . -iname '.git'); do
-    # echo ""
-    # echo "$i"
-    repo=$(dirname "$i")
-    echo "cd ${repo}"
+  # echo ""
+  # echo "$i"
+  repo=$(dirname "${i}")
+  echo "cd ${repo}"
 
-    # We have to go to the .git parent directory to call the pull command
-    cd "${repo}" || break
-    echo ""
-    echo "pwd: $(pwd)"
+  # We have to go to the .git parent directory to call the pull command
+  cd "${repo}" || break
+  echo ""
+  echo "pwd: $(pwd)"
 
-    # cp .git/config .git/config-backup
+  # cp .git/config .git/config-backup
 
-    sed -i '' 's/master/main/g' .git/config
-    sed -i '' 's/git@subsplash.io:/https:\/\/subsplash.io\//g' .git/config
-    sed -i '' '/fetch/s/main/*/g' .git/config
+  sed -i '' 's/master/main/g' .git/config
+  sed -i '' 's/git@subsplash.io:/https:\/\/subsplash.io\//g' .git/config
+  sed -i '' '/fetch/s/main/*/g' .git/config
 
-    # finally: git pull
-    echo git pull origin main
-    git fetch --auto-maintenance --prune --prune-tags --recurse-submodules --tags
-    git pull origin main --rebase --autostash --prune
+  # finally: git pull
+  echo git pull origin main
+  git fetch --auto-maintenance --prune --prune-tags --recurse-submodules --tags
+  git pull origin main --rebase --autostash --prune
 
-    echo ''
-    cd ..
+  echo ''
+  cd ..
 done
 
+cd "${CUR_DIR}" || return
 echo 'Complete!'

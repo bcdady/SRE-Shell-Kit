@@ -19,7 +19,7 @@
 API_URI='https://subsplash.io/api/v4'
 WEB_URI='https://subsplash.io'
 
-if [[ -z $@ ]]; then
+if [[ -z "$@" ]]; then
   echo ''
   echo "Error: No Project was specified."
   echo ''
@@ -34,7 +34,8 @@ if [[ -z $@ ]]; then
 fi
 
 # Check for a valid GitLab Personal Access Token to authenticate / authorize API calls
-if [[ -z $GITLAB_TOKEN ]]; then
+if [[ -z ${GITLAB_TOKEN} ]]; then
+  # shellcheck disable=SC2016
   echo 'Error: No $GITLAB_TOKEN was found.'
   exit
 fi
@@ -48,16 +49,16 @@ fi
 # space-delimited list of projects to apply the settings to
 # Can be a numerical Project ID or a URL-encoded URI
 # https://docs.gitlab.com/ee/api/README.html#namespaced-path-encoding
-PROJLIST=$@
+PROJLIST=( "${@}" )
 
-for PROJ in $PROJLIST; do
+for PROJ in "${PROJLIST[@]}"; do
 
   echo ''
   echo "Updating CI Runner settings for ${WEB_URI}/projects/${PROJ}/"
   echo ''
 
   curl --silent --request GET \
-    --header "Authorization: Bearer $GITLAB_TOKEN" \
+    --header "Authorization: Bearer ${GITLAB_TOKEN}" \
     "${API_URI}/projects/${PROJ}/runners" #\
   # | jq '. | {id,name,description,web_url}'
 
@@ -95,6 +96,7 @@ for PROJ in $PROJLIST; do
   # | jq '. | {id,web_url}'
 
 done
+
 exit
 
 # Scratchpad area of other, related, possibly useful gitlab API samples
