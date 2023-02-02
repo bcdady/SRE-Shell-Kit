@@ -4,4 +4,4 @@ binlog
 report
 *.json
 .task
-
+credential-reports/
