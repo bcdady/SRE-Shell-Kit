@@ -9,7 +9,7 @@ tasks:
     deps: [setup]
     cmds:
       - task: trunk:format
-    #   - task: tf:sec
+      #   - task: tf:sec
       - task: tf:docs
 
   setup:
